@@ -196,6 +196,20 @@ with open(outputFilename+".csv", "w+") as f:
 f.close()
 
 
+if not args.one_face:
+  configTop = staveTop.getConfiguration()
+  configBottom = staveBottom.getConfiguration()
+
+  print("************************************************************")
+  print("UPPER STAVE CONFIG PARAM:")
+  print(str(configTop))
+
+  print("************************************************************")
+  print("UPPER STAVE CONFIG PARAM:")
+  print(str(configBottom))
+  print("************************************************************")
+  print("************************************************************")
+
 #plotting if -g option selected
 if args.graphs:
   plt.figure(figsize=(12,6))
@@ -221,7 +235,6 @@ if args.graphs:
   plt.text(0, -0.13*yrange, "Code version: " + gitHash + " " + gitDate[:-6], fontsize=10)
   plt.savefig(outputFilename + ".png")
   print("Outputing graphical output into a file: " + outputFilename + ".png")
-  
 
 if args.debug:
   plt.clf()

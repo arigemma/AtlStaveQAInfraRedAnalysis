@@ -321,7 +321,38 @@ class Stave:
     logging.debug("impedances = " +str(impedances))
     
     return impedances
-  
+
+
+  def getConfiguration(self):
+
+    if not self.__staveFound:
+      logging.error("Cannot get the configuration parameters since the stave hasn't been found. Call the FindStaveWithin() method first.")
+      raise Exception("Cannot get the configuration parameters since the stave hasn't been found. Call the FindStaveWithin() method first.")
+
+    #the keys in the dictionary need to be compatible with the frameanal.py code
+    config_parameters = {
+      "StavePixelX0": self.__xLeft,
+      "StavePixelY0": self.__yBottom,
+      "StavePixelX1": self.__xRight,
+      "StavePixelY1": self.__yTop,
+      "PipePixelX0":  self.__xLeft + 2, # pipe position in pixel index
+      "PipePixelY0":  self.__yTop + 0.247826*(self.__yBottom-self.__yTop),
+      "PipePixelX1":  self.__xRight - 2,
+      "PipePixelY1":  self.__yTop + 0.317391*(self.__yBottom-self.__yTop),
+      "CMperPixel":   1375/(self.__xRight - self.__xLeft), # cm per pixel, specific for camera
+      "StaveSideL":   0, # 0: "J", 1: "L". Sides "J" or "L" based on the rotation of the end of stave card
+      "LiquidTLow":   0, # 0: higher than room temperature, 1: lower than room temperature
+      "FrameTmax":    -999., # for plotting, set the maximum and minimum Temperature
+      "FrameTmin":     999., # use arbitrary value if these parameters are not set
+      "StaveTmax":    -999., # Frame = raw frame, Stave = stave region, Pipe = pipe region
+      "StaveTmin":     999., 
+      "PipeTmax":    -999., 
+      "PipeTmin":     999., 
+    }
+
+    logging.debug("Getting configuration parameters: " + str())
+    return config_parameters
+
 class Region:
   def __init__(self,globalImg,xLeft,xRight,yTop,yBottom):
     self.__xLeft = xLeft
