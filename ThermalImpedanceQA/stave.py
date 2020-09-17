@@ -330,7 +330,7 @@ class Stave:
       raise Exception("Cannot get the configuration parameters since the stave hasn't been found. Call the FindStaveWithin() method first.")
 
     #the keys in the dictionary need to be compatible with the frameanal.py code
-    config_parameters = {
+    configParameters = {
       "StavePixelX0": self.__xLeft,
       "StavePixelY0": self.__yBottom,
       "StavePixelX1": self.__xRight,
@@ -350,8 +350,8 @@ class Stave:
       "PipeTmin":     999., 
     }
 
-    logging.debug("Getting configuration parameters: " + str())
-    return config_parameters
+    logging.debug("Getting configuration parameters: " + str(configParameters))
+    return configParameters
 
 class Region:
   def __init__(self,globalImg,xLeft,xRight,yTop,yBottom):
