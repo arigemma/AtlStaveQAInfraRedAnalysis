@@ -195,20 +195,27 @@ with open(outputFilename+".csv", "w+") as f:
         f.write(str(i)+", "+str(largeTop[i])+", "+str(largeBottom[i])+", "+str(smallTop[i])+", "+str(smallBottom[i]) + "\n")
 f.close()
 
-
+#saves the configuration into a config file so it can be used by frameanal.py script
 if not args.one_face:
+  configFilename = "output/config_" + inputFile.split("/")[-1][:-4]
   configTop = staveTop.getConfiguration()
-  configBottom = staveBottom.getConfiguration()
+  if not args.one_face:
+    configBottom = staveBottom.getConfiguration()
 
-  print("************************************************************")
-  print("UPPER STAVE CONFIG PARAM:")
-  print(str(configTop))
+  with open(configFilename+"_top","w+") as f:
+    f.write("#**************************************** \n")
+    f.write("# frame parameters used in frameanal.py \n")
+    f.write("#**************************************** \n")
+    for variable in configTop:
+      f.write("{} {} \n".format(variable,configTop[variable]))
 
-  print("************************************************************")
-  print("UPPER STAVE CONFIG PARAM:")
-  print(str(configBottom))
-  print("************************************************************")
-  print("************************************************************")
+  if not args.one_face:
+    with open(configFilename+"_bottom","w+") as f:
+      f.write("#**************************************** \n")
+      f.write("# frame parameters used in frameanal.py \n")
+      f.write("#**************************************** \n")
+      for variable in configBottom:
+        f.write("{} {} \n".format(variable,configBottom[variable]))
 
 #plotting if -g option selected
 if args.graphs:
