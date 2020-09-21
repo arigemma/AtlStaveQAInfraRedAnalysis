@@ -32,6 +32,8 @@ args = parser.parse_args()
 
 inputFile = args.path
 
+scaleFactor = 10
+
 if args.one_face:
     print("**********")
     print("This option has not been coded yet. Exiting.")
@@ -161,8 +163,8 @@ for i in range(0,lower_image.shape[0]):
         ypos[0] = j
         atree.Fill()
 
-nxpixel[0] = upper_image.shape[0]
-nypixel[0] = upper_image.shape[1]
+nxpixel[0] = scaleFactor*upper_image.shape[0]
+nypixel[0] = scaleFactor*upper_image.shape[1]
 year[0] = 2020
 month[0] = 1
 date[0] = 1
