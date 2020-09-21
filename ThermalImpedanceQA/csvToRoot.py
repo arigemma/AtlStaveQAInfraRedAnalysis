@@ -51,6 +51,10 @@ if args.debug:
     os.system("rm -r debug_output")
   os.mkdir("debug_output")
 
+#create the output folder if it doesn't exist
+if not "output" in os.listdir("."):
+  os.system("mkdir output")
+
 #set up the debugging log
 if args.debug:
     logging.basicConfig(filename='debug_output/csvToRoot_debug.log',level=logging.DEBUG)
@@ -77,15 +81,34 @@ logging.debug("shape lower_image = {}".format(lower_image.shape))
 temperature = np.empty((1), dtype="float64")
 xpos = np.empty((1), dtype="int64")
 ypos = np.empty((1), dtype="int64")
+nxpixel = np.empty((1), dtype="int64")
+nypixel = np.empty((1), dtype="int64")
+year = np.empty((1), dtype="int64")
+month = np.empty((1), dtype="int64")
+date = np.empty((1), dtype="int64")
+hour = np.empty((1), dtype="int64")
+minute = np.empty((1), dtype="int64")
+second = np.empty((1), dtype="float64")
+
 
 logging.debug("(Re)creating a ROOT file")
-file_lower = ROOT.TFile("test_lower.root", "recreate")
+file_lower = ROOT.TFile("output/test_lower.root", "recreate")
 
 logging.debug("Creating a TTree with branches.")
 atree = ROOT.TTree("atree", "a tree of temperature data")
 atree.Branch('temperature', temperature, 'temperature/D')
 atree.Branch('xpos', xpos, 'xpos/I')
 atree.Branch('ypos', ypos, 'ypos/I')
+
+btree = ROOT.TTree("btree", "a tree of camera information")
+btree.Branch('nxpixel', nxpixel, 'nxpixel/I')
+btree.Branch('nypixel', nypixel, 'nypixel/I')
+btree.Branch('year', year, 'year/I')
+btree.Branch('month', month, 'month/I')
+btree.Branch('date', date, 'date/I')
+btree.Branch('hour', hour, 'hour/I')
+btree.Branch('minute', minute, 'minute/I')
+btree.Branch('second', second, 'second/D')
 
 logging.debug("converting lower image")
 for i in range(0,lower_image.shape[0]):
@@ -96,26 +119,58 @@ for i in range(0,lower_image.shape[0]):
         ypos[0] = j
         atree.Fill()
 
+nxpixel[0] = lower_image.shape[0]
+nypixel[0] = lower_image.shape[1]
+year[0] = 2020
+month[0] = 1
+date[0] = 1
+hour[0] = 0
+minute[0] = 0
+second[0] = 0.0
+
+btree.Fill()
+
+
 file_lower.Write()
 
-file_lower.Close()
- 
+file_lower.Close() 
 
-file_upper = ROOT.TFile("test_upper.root", "recreate")
+file_upper = ROOT.TFile("output/test_upper.root", "recreate")
 
 atree = ROOT.TTree("atree", "a tree of temperature data")
 atree.Branch('temperature', temperature, 'temperature/D')
 atree.Branch('xpos', xpos, 'xpos/I')
 atree.Branch('ypos', ypos, 'ypos/I')
 
+btree = ROOT.TTree("btree", "a tree of camera information")
+btree.Branch('nxpixel', nxpixel, 'nxpixel/I')
+btree.Branch('nypixel', nypixel, 'nypixel/I')
+btree.Branch('year', year, 'year/I')
+btree.Branch('month', month, 'month/I')
+btree.Branch('date', date, 'date/I')
+btree.Branch('hour', hour, 'hour/I')
+btree.Branch('minute', minute, 'minute/I')
+btree.Branch('second', second, 'second/D')
+
 logging.debug("converting upper image")
 for i in range(0,lower_image.shape[0]):
     for j in range(0,lower_image.shape[1]):
-        logging.debug("temperature[{}][{}] = {}".format(i,j,lower_image[i][j]))
+        logging.debug("temperature[{}][{}] = {}".format(i,j,upper_image[i][j]))
         temperature[0] = upper_image[i][j]
         xpos[0] = i
         ypos[0] = j
         atree.Fill()
+
+nxpixel[0] = upper_image.shape[0]
+nypixel[0] = upper_image.shape[1]
+year[0] = 2020
+month[0] = 1
+date[0] = 1
+hour[0] = 0
+minute[0] = 0
+second[0] = 0.0
+
+btree.Fill()
 
 file_upper.Write()
 
