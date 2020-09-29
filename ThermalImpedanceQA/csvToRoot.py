@@ -86,7 +86,7 @@ minute = np.empty((1), dtype="int64")
 second = np.empty((1), dtype="float64")
 
 logging.debug("(Re)creating a ROOT file")
-file = ROOT.TFile("output/test.root", "recreate")
+file = ROOT.TFile("output/{}.root".format(inputFile[0:-4].split("/")[-1]), "recreate")
 
 logging.debug("Creating a TTree with branches.")
 atree = ROOT.TTree("atree", "a tree of temperature data")
