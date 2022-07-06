@@ -108,6 +108,20 @@ staveTop.DrawEdges(img_edges)
 if not(args.one_face):
   staveBottom.DrawEdges(img_edges)
 
+###   ************* -------- This is where I believe the two codes should fork ------------ *********************
+
+#get image before cut
+staveTop.getImage(True)
+
+#getting images of staves after cut using the it's found position
+print("Cutting stave image")
+staveTop_img = staveTop.getCutRegion(True)
+if not(args.one_face):
+  staveBottom = staveBottom.getCutRegion(True)
+print("Stave image cut!!!!!!")
+
+
+
 
 numModules = 14
 

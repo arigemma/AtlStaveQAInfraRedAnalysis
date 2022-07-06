@@ -280,13 +280,30 @@ class Stave:
 
   def DrawEdges(self,img):
     if self.__staveFound:
-      cv2.rectangle(img,(self.__xLeft,self.__yTop),(self.__xRight,self.__yBottom),(0,0,0),thickness=self.__lineThickness)
+      img_edges = cv2.rectangle(img,(self.__xLeft,self.__yTop),(self.__xRight,self.__yBottom),(0,0,0),thickness=self.__lineThickness)
     else:
       raise Exception("Stave was not found. Cannot use DrawEdges.")
-    return
+    return 
 
-  def getImage(self):
+  def getCutRegion(self, bool = False):
+    if self.__staveFound:
+      staveImage = np.copy(self.__globalImg[self.__yTop:self.__yBottom,self.__xLeft:self.__xRight])
+    else:
+      raise("Stave has not been found yet.")
+    if bool:
+        plt.figure()
+        plt.imshow(staveImage, cmap = "plasma")
+        plt.colorbar()
+        plt.savefig("output/StaveCut_img.png")
+    return staveImage
+
+  def getImage(self, bool = False):
     deepCopy = np.copy(self.__globalImg)
+    if bool:
+        plt.figure()
+        plt.imshow(deepCopy, cmap = "plasma")
+        plt.colorbar()
+        plt.savefig("output/Stave_img.png")
     return deepCopy
 
   def getTemperatures(self,regionType):
