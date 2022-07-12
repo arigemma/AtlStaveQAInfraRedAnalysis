@@ -15,6 +15,8 @@ import csv
 import logging
 import argparse
 import configparser
+import scipy as sp
+from scipy import optimize
 from matplotlib import pyplot as plt
 from stave import Stave
 
@@ -79,6 +81,7 @@ if args.J_flip:
   image = np.flip(image,axis=1)
 
 #creating the staves + loading the parameters from the config file
+image_og = np.copy(image)
 staveTop = Stave(image, configFile)
 if not(args.one_face):
   staveBottom = Stave(image, configFile)
@@ -117,10 +120,54 @@ staveTop.getImage(True)
 print("Cutting stave image")
 staveTop_img = staveTop.getCutRegion(True)
 if not(args.one_face):
-  staveBottom = staveBottom.getCutRegion(True)
+  staveBottom_img = staveBottom.getCutRegion(True)
 print("Stave image cut!!!!!!")
+print(staveTop_img.shape)
+print(staveTop_img.shape[1])
 
 
+stave_len = staveTop_img.shape[1] 
+stave_width = staveTop_img.shape[0]
+pipe_width = int(stave_width*0.4)
+
+def make_chisq(y):
+    x = (np.arange(len(y))+0.5)/100
+    print("x: ", x)
+    print("y: ", y)
+    
+    def chi_sq (params):
+        #print ("params: ", params)
+        #print("mu: ", params[0], "sigma log: ", params[1], "a: ", params[2])
+        mu, log_sigma, a, k = params
+        sigma = np.exp(log_sigma)
+        f_x = a*np.exp(-((x-mu)/sigma)**2)+ k
+        return np.sum((y-f_x)**2)
+    
+    return chi_sq  
+
+
+counts, x_hist, _  = plt.hist(staveTop_img[:pipe_width,100], bins=pipe_width)
+f_to_min = make_chisq(staveTop_img[:pipe_width,100])
+fit = sp.optimize.minimize(f_to_min, (1,1,10,20))
+print(fit)
+print(fit.x)
+
+np.save("stave_cut.npy", staveTop_img)
+np.save("stave_og.npy", image_og)
+    
+"""
+for i in range(stave_leny):
+    counts, x_hist, _  = plt.hist(staveTop_img[:pipe_width,i], bins=pipe_width)
+    f_to_min = make_chisq(staveTop_img[:pipe_width,i])
+    fit = sp.optimize.minimize(f_to_min, (0,1,1))
+    print(fit)
+    print(fit.x)
+"""
+    
+    
+
+
+    
 
 
 numModules = 14
