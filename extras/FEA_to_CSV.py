@@ -2,7 +2,7 @@
 """
 Created on Mon Jul  6 11:16:24 2020
 
-@author: LuBoss
+@author: Lubos (vozdeckyl@gmail.com)
 
 Script that converts the FEA Abaqus output into a CSV file.
 A file with settings named "settings.txt" is required.
@@ -25,22 +25,16 @@ latticeXperiod = int(settings[4])
 latticeYperiod = int(settings[5])
 
 
-tempLines = []
-
-with open("abaqus.rpt", "r") as file:
-    for line in file:
-        tempLines.append(line)
-
-tempLines = tempLines[19:] 
-
 tempLinesSplit = []
 
-for line in tempLines:
-    split = line.split("         ")
-    if len(split) <= 1:
-        break
-    tempLinesSplit.append([int(split[1].replace(" ","")), float(split[2].replace("\n",""))])
-        
+with open("abaqus.rpt", "r") as file:
+    lines = file.readlines()[19:]
+    for line in lines:
+        split = [s for s in line.split(" ") if s!=""]
+        if len(split) <= 1:
+            break
+        tempLinesSplit.append([int(split[0]), float(split[1])])
+
 
 export = False
 
